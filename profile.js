@@ -1,4 +1,4 @@
-const logout = document.querySelector('button')
+const logoutBtn = document.querySelector('.logout')
 async function rr() {
 
     const tf = await checkJWT()
@@ -64,7 +64,6 @@ const listData = (data) => {
     let raw = data.user[0]
     document.querySelector('.profile-name').textContent = raw.firstName + " " + raw.lastName
     document.querySelector('.email').textContent = raw.email
-    document.querySelector('.ratio span').textContent = Math.ceil(raw.auditRatio)
     document.querySelector('.campus span').textContent = raw.campus
     document.querySelector('.xp span').textContent = raw.xp.aggregate.sum.amount / 1000
 
@@ -72,8 +71,25 @@ const listData = (data) => {
     console.log();
 
 }
+// logout
+const logoutPopup = document.getElementById('logoutPopup');
+const cancelBtn = document.getElementById('cancelBtn');
+const confirmBtn = document.getElementById('confirmBtn');
 
-logout.onclick = ()=>{
+
+logoutBtn.onclick = () => {
+    console.log(12);
+    
+    logoutPopup.style.display = 'block';
+}
+
+cancelBtn.addEventListener('click', () => {
+    logoutPopup.style.display = 'none';
+});
+
+confirmBtn.addEventListener('click', () => {
+    alert("Goodbye! Hope to see you soon! 👋");
+    logoutPopup.style.display = 'none';
     localStorage.removeItem('jwt')
     location.href = '/login.html'
-}
+});

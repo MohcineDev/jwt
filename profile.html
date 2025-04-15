@@ -10,22 +10,49 @@
 </head>
 
 <body>
-
+    <div id="logoutPopup" class="popup-container">
+        <div class="popup-header">Are you sure?</div>
+        <div class="button-container">
+          <button id="cancelBtn" class="btn btn-cancel">No, Keep Me Here!</button>
+          <button id="confirmBtn" class="btn btn-logout">Yes, I’m Outta Here!</button>
+        </div>
+        <div class="popup-footer">You can always come back... we’ll miss you!</div>
+      </div>
     <h1>Your Profile</h1>
     <div class="profile-card">
         <h2 class="profile-name"></h2>
         <div class="profile-info">
             <p class="profile-detail email"><strong>Joined:</strong> 2020</p>
-            <p class="profile-detail campus"><strong>Campus:</strong> <span></span></p>
-            <p class="profile-detail ratio"><strong>Audit Ratio:</strong> <span></span></p>
-            <p class="profile-detail xp"><strong>XP:</strong> <span></span>KB</p>
-            <button>logout</button>
+            <p class="profile-detail campus"><strong>Campus :</strong> <span></span></p>
+            <p class="profile-detail xp"><strong>XP :</strong> <span></span>KB</p>
+            <button class="logout">logout</button>
         </div>
     </div>
 
+    <h2>XP earned by project</h2>
+    <svg id="barGraph"></svg>
+    <h2>XP earned in a time period (progress over time)</h2>
+    <svg id="barGraph2"></svg>
 
+ 
+
+    <div class="container">
+        <h1>Technology Progress</h1>
+        <div class="chart-container">
+          <div class="pie-container">
+            <svg class="pie" viewBox="-160 -160 320 320">
+              <!-- Pie slices will be added here -->
+            </svg>
+            <div class="tooltip"></div>
+          </div>
+          <div class="legend">
+            <!-- Legend items will be added here -->
+          </div>
+        </div>
+      </div>
     <script src="main.js"></script>
     <script src="profile.js"></script>
+    <script src="script.js">    </script>
 
 </body>
 </html>
