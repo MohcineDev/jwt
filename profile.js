@@ -23,6 +23,7 @@ async function getAboutData() {
                             email 
                             firstName
                             lastName
+                            auditRatio
                             xp:transactions_aggregate(where:{type:{_eq:"xp"}
                             eventId:{_eq:41}}){
                                 aggregate{
@@ -30,8 +31,25 @@ async function getAboutData() {
                                         amount
                                     }
                                 }
-                             }
-                        }
+                            }
+                        
+                            failed: audits_aggregate( where: {auditedAt: {_is_null: false} grade:{_lt:1} }){ 
+                                aggregate{
+                                    count
+                                }
+                            }
+                            succeded: audits_aggregate( where: {auditedAt: {_is_null: false} grade:{_gte:1} }){ 
+                                aggregate{
+                                    count
+                                }
+                            }
+                            
+                            all_audits:audits_aggregate(where:{auditedAt:{_is_null:false}}){
+                                aggregate{
+                                    count
+                                }
+                            }
+                        }     
     } `
 
     try {
@@ -66,6 +84,10 @@ const listData = (data) => {
     document.querySelector('.email').textContent = raw.email
     document.querySelector('.campus span').textContent = raw.campus
     document.querySelector('.xp span').textContent = raw.xp.aggregate.sum.amount / 1000
+    document.querySelector('.auditRatio  span').textContent = raw.auditRatio.toFixed(1) 
+    document.querySelector('.audits span').textContent = raw.all_audits.aggregate.count 
+    document.querySelector('.all_audits span:nth-of-type(1)').textContent = raw.succeded.aggregate.count 
+    document.querySelector('.all_audits span:nth-of-type(2)').textContent = raw.failed.aggregate.count 
 
 
     console.log();

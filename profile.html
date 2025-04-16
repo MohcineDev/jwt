@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>profile</title>
+    <link rel="stylesheet" href="main.css">
     <link rel="stylesheet" href="profile.css">
     <link rel="shortcut icon" href="https://jwt.io/img/favicon/apple-icon-60x60.png" type="image/x-icon">
 </head>
@@ -25,6 +26,14 @@
             <p class="profile-detail email"><strong>Joined:</strong> 2020</p>
             <p class="profile-detail campus"><strong>Campus :</strong> <span></span></p>
             <p class="profile-detail xp"><strong>XP :</strong> <span></span>KB</p>
+            <p class="profile-detail auditRatio"><strong>Audit Ratio :</strong> <span></span></p>
+            <div class="audits">
+              <p class="profile-detail audits"><strong>All Audits :</strong> <span></span></p>
+              <p class="profile-detail all_audits"> 
+                <span title="nbr of succeded audits"></span>
+                <span title="nbr of failed audits"></span>
+              </p>
+            </div>
             <button class="logout">logout</button>
         </div>
     </div>
@@ -33,9 +42,7 @@
     <svg id="barGraph"></svg>
     <h2>XP earned in a time period (progress over time)</h2>
     <svg id="barGraph2"></svg>
-
  
-
     <div class="container">
         <h1>Technology Progress</h1>
         <div class="chart-container">
