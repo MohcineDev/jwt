@@ -28,7 +28,6 @@ loginBtn.onclick = async () => {
                 Authorization: `Basic ${btoa(data)}`,
                 'Content-Type': 'application/json'
             }
-
         })
 
         const jwt = await res.json()
