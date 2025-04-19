@@ -7,7 +7,7 @@ async function checkJWT() {
     }
 
     const url = 'https://learn.zone01oujda.ma/api/graphql-engine/v1/graphql'
-    const query = `    {  user { id   }  }`
+    const query = `    {  user { login   }  }`
 
     try {
         const res = await fetch(url, {
@@ -23,7 +23,8 @@ async function checkJWT() {
 
         if (jwt.errors) {
             return false
-        }
+        } 
+        
         return true
 
     } catch (error) {
