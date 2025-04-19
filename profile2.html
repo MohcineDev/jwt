@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skill Amount Bar Chart</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f5f5f5;
+    }
+    .chart-container {
+      width: 80%;
+      max-width: 800px;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .bar {
+      height: 30px;
+      margin: 10px 0;
+      border-radius: 5px;
+      color: white;
+      text-align: left;
+      padding-left: 10px;
+      line-height: 30px;
+      font-weight: bold;
+    }
+    .bar-label {
+      display: inline-block;
+      width: 150px;
+    }
+    .bar-amount {
+      display: inline-block;
+      text-align: right;
+      padding-right: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="chart-container" id="chartContainer"></div>
+
+  <script>
+    // Data from GraphQL query
+    const data = {
+      "data": {
+        "transaction": [
+          { "type": "skill_ai", "amount": 5 },
+          { "type": "skill_algo", "amount": 38 },
+          { "type": "skill_back-end", "amount": 35 },
+          { "type": "skill_css", "amount": 15 },
+          { "type": "skill_docker", "amount": 15 },
+          { "type": "skill_front-end", "amount": 40 },
+          { "type": "skill_game", "amount": 15 },
+          { "type": "skill_go", "amount": 45 },
+          { "type": "skill_html", "amount": 35 },
+          { "type": "skill_js", "amount": 35 },
+          { "type": "skill_prog", "amount": 95 },
+          { "type": "skill_sql", "amount": 25 },
+          { "type": "skill_stats", "amount": 10 },
+          { "type": "skill_sys-admin", "amount": 5 },
+          { "type": "skill_tcp", "amount": 30 },
+          { "type": "skill_unix", "amount": 15 }
+        ]
+      }
+    };
+
+    // Extracting the skill types and amounts
+    const skillTypes = data.data.transaction.map(item => item.type);
+    const amounts = data.data.transaction.map(item => item.amount);
+
+    // The maximum amount to normalize the bar widths (for a consistent scale)
+    const maxAmount = Math.max(...amounts);
+
+    // Function to create a bar chart
+    function createBarChart() {
+      const chartContainer = document.getElementById('chartContainer');
+      
+      data.data.transaction.forEach((item, index) => {
+        const barContainer = document.createElement('div');
+        barContainer.classList.add('bar');
+
+        // Calculate the width of the bar as a percentage of the maximum amount
+        const barWidth = (item.amount / maxAmount) * 100;
+
+        // Set up the bar label and amount display
+        const barLabel = document.createElement('span');
+        barLabel.classList.add('bar-label');
+        barLabel.innerText = item.type;
+
+        const barAmount = document.createElement('span');
+        barAmount.classList.add('bar-amount');
+        barAmount.innerText = item.amount;
+
+        // Set the width of the bar and add the text
+        barContainer.style.width = barWidth + '%';
+        barContainer.style.backgroundColor = getRandomColor();
+        barContainer.innerHTML = `${barLabel.outerHTML} <span class="bar-amount">${barAmount.innerText}</span>`;
+
+        // Append the bar to the chart container
+        chartContainer.appendChild(barContainer);
+      });
+    }
+
+    // Helper function to generate a random color for each bar
+    function getRandomColor() {
+      const letters = '0123456789ABCDEF';
+      let color = '#';
+      for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+    }
+
+    // Call the function to create the chart
+    createBarChart();
+  </script>
+
+</body>
+</html>

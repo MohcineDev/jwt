@@ -34,6 +34,15 @@ async function getAboutData() {
                         }
     } `
 
+    /*    
+    jwt contains 3 parts
+    -header : algo used to generate this token & token type 
+    -payload : user info ex: name, role, exp : stores the data u want to trasmit
+    -signature to check if the token valid using algos likes HMACSHA256 that takes header + payload + secret key
+
+    token based authentication is stateless
+
+    */
     try {
         const res = await fetch(url, {
             method: 'post',

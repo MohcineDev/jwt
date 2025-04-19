@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skill Amount Pie Chart</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f5f5f5;
+    }
+    .chart-container {
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: white;
+      position: relative;
+    }
+    svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg); /* Rotate the SVG so the first slice starts from the top */
+    }
+    .label {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-weight: bold;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="chart-container">
+    <svg id="pieChart"></svg>
+    <div class="label" id="chartLabel">Skill Distribution</div>
+  </div>
+
+  <script>
+    // Data from GraphQL query
+    const data = {
+      "data": {
+        "transaction": [
+          { "type": "skill_ai", "amount": 5 },
+          { "type": "skill_algo", "amount": 38 },
+          { "type": "skill_back-end", "amount": 35 },
+          { "type": "skill_css", "amount": 15 },
+          { "type": "skill_docker", "amount": 15 },
+          { "type": "skill_front-end", "amount": 40 },
+          { "type": "skill_game", "amount": 15 },
+          { "type": "skill_go", "amount": 45 },
+          { "type": "skill_html", "amount": 35 },
+          { "type": "skill_js", "amount": 35 },
+          { "type": "skill_prog", "amount": 95 },
+          { "type": "skill_sql", "amount": 25 },
+          { "type": "skill_stats", "amount": 10 },
+          { "type": "skill_sys-admin", "amount": 5 },
+          { "type": "skill_tcp", "amount": 30 },
+          { "type": "skill_unix", "amount": 15 }
+        ]
+      }
+    };
+
+    // Extracting the skill types and amounts
+    const skillTypes = data.data.transaction.map(item => item.type);
+    const amounts = data.data.transaction.map(item => item.amount);
+
+    // Calculate the total amount
+    const totalAmount = amounts.reduce((sum, value) => sum + value, 0);
+
+    // Function to create a pie chart
+    function createPieChart() {
+      const svg = document.getElementById('pieChart');
+      const radius = 150; // Radius of the pie
+      const centerX = 200; // Center of the pie (SVG width/height is 400px, so center is at 200px)
+      const centerY = 200;
+
+      let currentAngle = 0;
+
+      // Loop through each transaction and create a slice
+      data.data.transaction.forEach((item, index) => {
+        const sliceAngle = (item.amount / totalAmount) * 360;
+        const slicePath = createSlicePath(currentAngle, sliceAngle, radius, centerX, centerY);
+
+        // Create the <path> element for the slice
+        const slice = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        slice.setAttribute('d', slicePath);
+        slice.setAttribute('fill', getRandomColor());
+        svg.appendChild(slice);
+
+        currentAngle += sliceAngle; // Update the start angle for the next slice
+      });
+    }
+
+    // Helper function to create a slice path (arc)
+    function createSlicePath(startAngle, angle, radius, centerX, centerY) {
+      const startX = centerX + radius * Math.cos((startAngle * Math.PI) / 180);
+      const startY = centerY + radius * Math.sin((startAngle * Math.PI) / 180);
+      const endX = centerX + radius * Math.cos(((startAngle + angle) * Math.PI) / 180);
+      const endY = centerY + radius * Math.sin(((startAngle + angle) * Math.PI) / 180);
+
+      const largeArcFlag = angle > 180 ? 1 : 0;
+
+      // Create a path for the slice (an SVG arc)
+      return `M ${centerX} ${centerY} L ${startX} ${startY} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${endX} ${endY} Z`;
+    }
+
+    // Helper function to generate a random color
+    function getRandomColor() {
+      const letters = '0123456789ABCDEF';
+      let color = '#';
+      for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+    }
+
+    // Create the pie chart
+    createPieChart();
+  </script>
+
+</body>
+</html>
