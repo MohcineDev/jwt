@@ -7,7 +7,7 @@ async function rr() {
     const tf = await checkJWT()
 
     if (tf) {
-        location.href = '/jwt/profile.html'
+        location.pathname = '/jwt/profile.html'
     }
 }
 
@@ -39,7 +39,7 @@ form.onsubmit = async (e) => {
 
         localStorage.setItem('jwt', jwt)
         setTimeout(() => {
-            location.href = '/jwt/profile.html'
+            location.pathname = '/jwt/profile.html'
         }, 200);
     } catch (error) {
         alert(error.error)
