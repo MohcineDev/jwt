@@ -4,7 +4,7 @@ async function rr() {
     const tf = await checkJWT()
 
     if (!tf) {
-        location.pathname = '/jwt/index.html'
+        location.pathname = `${root}/index.html`
     }
 }
 
@@ -169,7 +169,8 @@ confirmBtn.addEventListener('click', () => {
     alert("Goodbye! Hope to see you soon! 👋");
     logoutPopup.style.display = 'none';
     localStorage.removeItem('jwt')
-    location.pathname = '/jwt/index.html'
+    location.pathname = `${root}/index.html`
+
 });
 
 

@@ -7,7 +7,7 @@ async function rr() {
     const tf = await checkJWT()
 
     if (tf) {
-        location.pathname = '/jwt/profile.html'
+        location.pathname = `${root}/profile.html`
     }
 }
 
@@ -16,7 +16,7 @@ rr()
 form.onsubmit = async (e) => {
     //prevent page reload ==+> access profile page
     e.preventDefault()
-    
+
     const data = user_email.value + ':' + pass.value
 
     const url = 'https://learn.zone01oujda.ma/api/auth/signin'
@@ -39,7 +39,7 @@ form.onsubmit = async (e) => {
 
         localStorage.setItem('jwt', jwt)
         setTimeout(() => {
-            location.pathname = '/jwt/profile.html'
+            location.pathname = `${root}/profile.html`
         }, 200);
     } catch (error) {
         alert(error.error)

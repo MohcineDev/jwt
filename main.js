@@ -1,3 +1,8 @@
+let root =''
+
+if (location.hostname === 'mohcinedev.github.io') {
+    root = '/jwt'
+}
 
 async function checkJWT() {
 
