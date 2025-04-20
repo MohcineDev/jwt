@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive SVG Line Chart</title>
+    <link rel="stylesheet" href="main.css">
+    <style>
+        /* Ensure the chart container is responsive */
+        #chart-container {
+            width: 100%;
+            max-width: 1000px;
+            /* You can set a max width */
+            margin: 0 auto;
+            /* Center the chart */
+        }
+
+        svg {
+            max-width: 800px;
+            height: auto;
+            background-color: rgba(47, 39, 39, 0.524);
+        }
+
+        .line {
+            fill: none;
+            stroke: #4caf50;
+            stroke-width: 2;
+        }
+
+        .point {
+            fill: steelblue;
+            stroke: white;
+            stroke-width: 2;
+        }
+
+        line {
+            stroke: #fff;
+
+        }
+
+        text {
+            fill: #fff;
+        }
+
+        .highlight {
+            fill: orange;
+        }
+
+        text {
+            font-size: 12px;
+            text-anchor: middle;
+        }
+
+        .point:hover {
+            fill: crimson;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="chart-container">
+        <svg id="graph" viewBox="0 0 850 400"></svg>
+    </div>
+
+    <script>
+        const data = [
+            { "path": "go-reloaded", "amount": 5 },
+            { "path": "ascii-art", "amount": 6.125 },
+            { "path": "fs", "amount": 6.125 },
+            { "path": "output", "amount": 6.125 },
+            { "path": "color", "amount": 6.125 },
+            { "path": "ascii-art-web", "amount": 9.2 },
+            { "path": "stylize", "amount": 9.2 },
+            { "path": "justify", "amount": 6.125 },
+            { "path": "dockerize", "amount": 9.2 },
+            { "path": "exportfile", "amount": 9.2 },
+            { "path": "groupie-tracker", "amount": 24.5 },
+            { "path": "math-skills", "amount": 10 },
+            { "path": "visualizations", "amount": 12.25 },
+            { "path": "filters", "amount": 12.25 },
+            { "path": "net-cat", "amount": 12.25 },
+            { "path": "guess-it-1", "amount": 5 },
+            { "path": "piscine-js", "amount": 70 },
+            { "path": "lem-in", "amount": 34.375 },
+            { "path": "forum", "amount": 76.25 },
+            { "path": "make-your-game", "amount": 147 },
+            { "path": "history", "amount": 49 },
+            { "path": "different-maps", "amount": 49 }
+        ];
+
+        // Function to update the chart
+        function updateChart() {
+            const svg = document.getElementById('graph');
+            const svgWidth = svg.clientWidth;  // Get the current width of the SVG
+            const svgHeight = svg.clientHeight; // Get the current height of the SVG
+            const margin = 50;
+
+            // Scaling the data to fit the SVG
+            const maxValue = Math.max(...data.map(d => d.amount));
+            const xScale = svgWidth - margin * 2;
+            const yScale = svgHeight - margin * 2;
+
+            // Calculate the scaling factors
+            const xStep = xScale / (data.length - 1); // Space between points on the x-axis
+            const yStep = yScale / maxValue; // Scale factor for amount
+
+            // Clear the SVG before redrawing
+            svg.innerHTML = '';
+
+            // Create the line path
+            let linePath = 'M ' + margin + ',' + (svgHeight - margin - (data[0].amount * yStep));
+
+            // Plot the points and the path
+            data.forEach((item, index) => {
+                const x = margin + index * xStep;
+                const y = svgHeight - margin - (item.amount * yStep);
+
+                // Create the line path data (draw line)
+                linePath += ` L ${x},${y}`;
+
+                // Create circle for each point
+                const point = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                point.setAttribute('cx', x);
+                point.setAttribute('cy', y);
+                point.setAttribute('r', 6); // Point radius
+                point.setAttribute('class', 'point');
+
+                // Add a title (tooltip) to each point to display project name and XP on hover
+                const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+                title.textContent = `${item.path}: ${item.amount} XP`; // Display project name and XP
+                point.appendChild(title);  // Append title to point (this shows the tooltip on hover)
+                svg.appendChild(point);
+            });
+
+            // Draw the line
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            line.setAttribute('d', linePath);
+            line.setAttribute('class', 'line');
+            svg.appendChild(line);
+
+            // Draw X-axis (Path labels)
+            const xAxisY = svgHeight - margin; // Position of the X-axis at the bottom of the SVG
+            const xTickHeight = 10;  // Height of the ticks on the X-axis
+
+            // Draw X-axis line
+            const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            xAxis.setAttribute('x1', margin);
+            xAxis.setAttribute('y1', xAxisY);
+            xAxis.setAttribute('x2', svgWidth - margin);
+            xAxis.setAttribute('y2', xAxisY);
+            svg.appendChild(xAxis);
+
+            // Add X-axis labels for each path
+            data.forEach((item, index) => {
+                const x = margin + index * xStep;
+                const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                label.setAttribute('x', x + 30);
+                label.setAttribute('y', xAxisY + xTickHeight +5);  // Position below the axis
+                label.setAttribute('fill',"red");  // Position below the axis
+                label.textContent = item.path;
+                 
+                label.setAttribute('transform-origin', `top left`)
+                label.setAttribute('transform', `rotate(45, ${x}, ${xAxisY + xTickHeight})`); // Rotate for readability
+                svg.appendChild(label);
+            });
+            // Add the word "Project" at the end of the X-axis
+            // const projectLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            // projectLabel.setAttribute('x', svgWidth - margin + 20); // Position at the end of X-axis
+            // projectLabel.setAttribute('y', xAxisY + xTickHeight);  // Position just below the axis
+            // projectLabel.textContent = 'Project';
+            // svg.appendChild(projectLabel);
+
+            // Draw Y-axis (Value scale)
+            const yAxisX = margin; // Position of the Y-axis on the left of the SVG
+
+            // Draw Y-axis line
+            const yAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            yAxis.setAttribute('x1', yAxisX);
+            yAxis.setAttribute('y1', margin);
+            yAxis.setAttribute('x2', yAxisX);
+            yAxis.setAttribute('y2', svgHeight - margin);
+            svg.appendChild(yAxis);
+
+            // Add Y-axis labels for each value step
+            const numSteps = 5; // Number of steps on the Y-axis (you can adjust this)
+            for (let i = 0; i <= numSteps; i++) {
+                const yValue = (maxValue * (1 - i / numSteps))
+                const yPosition = svgHeight - margin - (yValue * yStep); // Position on the SVG
+
+                const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                label.setAttribute('x', yAxisX - 10); // Position left of the Y-axis
+                label.setAttribute('y', yPosition);
+                label.textContent = yValue.toFixed()
+                label.setAttribute('text-anchor', 'end');
+                svg.appendChild(label);
+            }
+        }
+
+        // Initial render
+        window.addEventListener('load', updateChart);
+
+        // Redraw the chart on window resize
+        window.addEventListener('resize', updateChart);
+    </script>
+</body>
+
+</html>

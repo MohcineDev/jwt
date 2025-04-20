@@ -1,6 +1,6 @@
 const user_email = document.querySelector('input[type="text"]')
 const pass = window.document.querySelector('input[type="password"]')
-const loginBtn = document.querySelector('.login-btn')
+const form = document.querySelector('form')
 
 async function rr() {
 
@@ -8,16 +8,16 @@ async function rr() {
 
     if (tf) {
         location.href = '/profile.html'
-
     }
 }
 
 rr()
 
-loginBtn.onclick = async () => {
+form.onsubmit = async (e) => {
+    //prevent page reload ==+> access profile page
+    e.preventDefault()
+    
     const data = user_email.value + ':' + pass.value
-    console.log(btoa(data));
-
 
     const url = 'https://learn.zone01oujda.ma/api/auth/signin'
     try {
@@ -31,7 +31,9 @@ loginBtn.onclick = async () => {
         })
 
         const jwt = await res.json()
+        console.log("error");
         if (!res.ok) {
+
             throw (jwt);
         }
 
