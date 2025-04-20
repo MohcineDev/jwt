@@ -2,67 +2,62 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>profile</title>
-    <link rel="stylesheet" href="main.css">
-    <link rel="stylesheet" href="profile.css">
-    <link rel="shortcut icon" href="https://jwt.io/img/favicon/apple-icon-60x60.png" type="image/x-icon">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>profile</title>
+  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="profile.css">
+  <link rel="shortcut icon" href="https://jwt.io/img/favicon/apple-icon-60x60.png" type="image/x-icon">
 </head>
 
 <body>
-    <div id="logoutPopup" class="popup-container">
-        <div class="popup-header">Are you sure?</div>
-        <div class="button-container">
-          <button id="cancelBtn" class="btn btn-cancel">No, Keep Me Here!</button>
-          <button id="confirmBtn" class="btn btn-logout">Yes, I’m Outta Here!</button>
-        </div>
-        <div class="popup-footer">You can always come back... we’ll miss you!</div>
-      </div>
-    <h1>Your Profile</h1>
-    <div class="profile-card">
-        <h3 class="profile-name"></h3>
-        <div class="profile-info">
-            <p class="profile-detail email"><strong>Joined:</strong> 2020</p>
-            <p class="profile-detail xp"><strong>XP :</strong> <span></span>KB</p>
-            <p class="profile-detail auditRatio"><strong>Audit Ratio :</strong> <span></span></p>
-            <div class="audits">
-              <p class="profile-detail audits"><strong>All Audits :</strong> <span></span></p>
-              <p class="profile-detail all_audits"> 
-                <span title="nbr of succeded audits"></span>
-                <span title="nbr of failed audits"></span>
-              </p>
-            </div>
-            <button class="logout">logout</button>
-        </div>
+  <svg class="logo" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+    stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round"
+      d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
+  </svg>
+
+  <div id="logoutPopup" class="popup-container">
+    <div class="popup-header">Are you sure?</div>
+    <div class="button-container">
+      <button id="cancelBtn" class="btn btn-cancel">No, Keep Me Here!</button>
+      <button id="confirmBtn" class="btn btn-logout">Yes, I’m Outta Here!</button>
     </div>
-
-    <section id="chart-container">
-      <svg id="graph" viewBox="0 0 850 400"></svg>
-  </section>
-    <h2>XP earned by project</h2>
-    <svg id="barGraph"></svg>
-    <h2>XP earned in a time period (progress over time)</h2>
-    <svg id="barGraph2"></svg>
- 
-    <div class="container">
-        <h1>Technology Progress</h1>
-        <div class="chart-container">
-          <div class="pie-container">
-            <svg class="pie" viewBox="-160 -160 320 320">
-              <!-- Pie slices will be added here -->
-            </svg>
-            <div class="tooltip"></div>
-          </div>
-          <div class="legend">
-            <!-- Legend items will be added here -->
-          </div>
-        </div>
+    <div class="popup-footer">You can always come back... we’ll miss you!</div>
+  </div>
+  <h1>Your Profile Dashboard</h1>
+  <div class="profile-card">
+    <h3 class="profile-name"></h3>
+    <div class="profile-info">
+      <p class="profile-detail email"><strong>Joined:</strong> 2020</p>
+      <p class="profile-detail xp"><strong>XP :</strong> <span></span>KB</p>
+      <p class="profile-detail auditRatio"><strong>Audit Ratio :</strong> <span></span></p>
+      <div class="audits">
+        <p class="profile-detail audits"><strong>All Audits :</strong> <span></span></p>
+        <p class="profile-detail all_audits">
+          <span title="nbr of succeded audits"></span>
+          <span title="nbr of failed audits"></span>
+        </p>
       </div>
+      <button class="logout">logout</button>
+    </div>
+  </div>
 
-    <script src="main.js"></script>
-    <script src="profile.js"></script>
-    <script src="script.js">    </script>
+  <section id="chart-container">
+    <svg id="graph" viewBox="0 0 850 400"></svg>
+
+  </section>
+  <section id="chart-container">
+
+    <svg id="bar-chart" viewBox="0 0 850 400"></svg>
+  </section>
+
+
+
+  <script src="main.js"></script>
+  <script src="profile.js"></script>
+  <!-- <script src="script.js">    </script> -->
 
 </body>
+
 </html>

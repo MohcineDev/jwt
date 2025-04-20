@@ -4,12 +4,12 @@ async function rr() {
     const tf = await checkJWT()
 
     if (!tf) {
-        location.href = '/login.html'
+        location.href = '/index.html'
     }
 }
 
 rr()
-const aboutSectionQuery = `{
+const aboutSectionQuery = `
                         user { 
                             email 
                             firstName
@@ -49,13 +49,39 @@ const projectsXpQuery = `
                     } 
 `
 
-async function getAboutData() {
+///TODO : use this one to omit js filter and remove piscine js
+const onlyProject = `
+  transaction(where: {eventId: {_eq: 41},
+    type: {_eq: "xp"}, object: {type: {_eq: "project"}}}) {
+    path
+    type
+    amount
+    object {
+      type
+      name
+    }
+  }
+    `
+const skills = `
+                {
+                    transaction(
+                    distinct_on: type 
+                    where: { type: { _like: "skill_%" } }
+                    order_by: [{ type: asc }, { amount: desc }]
+                    ) {
+                    type
+                    amount
+                    }
+                }
+`
+
+async function getData() {
     const localJWT = localStorage.getItem('jwt')
     if (!localJWT) {
         return false
     }
     const url = 'https://learn.zone01oujda.ma/api/graphql-engine/v1/graphql'
-    const query = ` 
+    const query = ` {
                           ${aboutSectionQuery}
                           ${projectsXpQuery}
     } `
@@ -93,7 +119,7 @@ async function getAboutData() {
         console.log(error);
     }
 }
-getAboutData()
+getData()
 
 const listData = (data) => {
     let raw = data.user[0]
@@ -143,7 +169,7 @@ confirmBtn.addEventListener('click', () => {
     alert("Goodbye! Hope to see you soon! 👋");
     logoutPopup.style.display = 'none';
     localStorage.removeItem('jwt')
-    location.href = '/login.html'
+    location.href = '/index.html'
 });
 
 
@@ -253,4 +279,145 @@ function updateChart(data) {
         label.setAttribute('text-anchor', 'end');
         svg.appendChild(label);
     }
-} 
+}
+
+
+/////bar-chart
+
+///// Data for the bar chart
+// Data for the bar chart
+const data = {
+    "transaction": [
+        { "type": "skill_ai", "amount": 5 },
+        { "type": "skill_algo", "amount": 38 },
+        { "type": "skill_back-end", "amount": 35 },
+        { "type": "skill_css", "amount": 15 },
+        { "type": "skill_docker", "amount": 15 },
+        { "type": "skill_front-end", "amount": 40 },
+        { "type": "skill_game", "amount": 15 },
+        { "type": "skill_go", "amount": 45 },
+        { "type": "skill_html", "amount": 35 },
+        { "type": "skill_js", "amount": 35 },
+        { "type": "skill_prog", "amount": 95 },
+        { "type": "skill_sql", "amount": 25 },
+        { "type": "skill_stats", "amount": 10 },
+        { "type": "skill_sys-admin", "amount": 5 },
+        { "type": "skill_tcp", "amount": 30 },
+        { "type": "skill_unix", "amount": 15 }
+    ]
+};
+function drawBarChart(data) {
+
+    // Set up SVG container
+    const svg = document.getElementById('bar-chart');  // Ensure you have an SVG element with this ID
+    const svgWidth = svg.clientWidth;  // Get the current width of the SVG
+    const svgHeight = svg.clientHeight; // Get the current height of the SVG
+    const margin = 50;
+    const barWidth = svgWidth / data.transaction.length - 10;  // Width of each bar (with some padding)
+
+    // Find the max value to scale the bars
+    const maxAmount = Math.max(...data.transaction.map(item => item.amount));
+
+    // Scaling factors
+    const yStep = (svgHeight - margin * 2) / maxAmount; // Scale factor for the height of the bars
+
+    // Clear the SVG before redrawing
+    svg.innerHTML = '';
+
+    // Group elements and draw bars
+    data.transaction.forEach((item, index) => {
+        const x = margin + index * (barWidth + 10); // Position each bar with some spacing between them
+        const y = svgHeight - margin - (item.amount * yStep); // Y position based on the amount
+        const height = item.amount * yStep; // Height of the bar
+
+        // Create a group to hold each rect (bar) and its amount label
+        const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        group.setAttribute('class', 'bar-group');
+
+        // Create a rectangle (bar) for each skill
+        const bar = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        bar.setAttribute('x', x);
+        bar.setAttribute('y', y);
+        bar.setAttribute('width', barWidth);
+        bar.setAttribute('height', height);
+        bar.setAttribute('fill', '#4caf50'); // Color of the bars
+        bar.setAttribute('class', 'bar');
+
+        // Add a title (tooltip) to each bar to display skill name and amount on hover
+        const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+        title.textContent = `${item.type}: ${item.amount} XP`; // Tooltip text
+        bar.appendChild(title);  // Attach title to the bar
+
+        // Add a text element to display the amount above the bar (hidden by default)
+        const amountText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        amountText.setAttribute('x', x + barWidth / 2); // Center the text above the bar
+        amountText.setAttribute('y', y - 5); // Position slightly above the bar
+        amountText.setAttribute('text-anchor', 'middle');
+        amountText.textContent = item.amount;
+        amountText.setAttribute('display', 'none'); // Initially hidden
+
+        // Show the amount text when hovering over the bar
+        bar.addEventListener('mouseenter', () => {
+            amountText.setAttribute('display', 'block');
+        });
+
+        // Hide the amount text when the hover ends
+        bar.addEventListener('mouseleave', () => {
+            amountText.setAttribute('display', 'none');
+        });
+
+        // Add the bar and the amount text to the group
+        group.appendChild(bar);
+        group.appendChild(amountText);
+
+        // Add the group to the SVG
+        svg.appendChild(group);
+    });
+
+    // Draw X-axis (labels for skills)
+    const xAxisY = svgHeight - margin;
+    data.transaction.forEach((item, index) => {
+        const x = margin + index * (barWidth + 10) + barWidth / 2; // Center the label below the bar
+        const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        label.setAttribute('x', x+15);
+        label.setAttribute('y', xAxisY + 25);  // Position below the axis
+        label.textContent = item.type.substring(6);
+        label.setAttribute('text-anchor', 'middle');
+        label.setAttribute('transform', `rotate(45, ${x}, ${xAxisY + 10})`); // Rotate for readability
+        svg.appendChild(label);
+    });
+
+    // Draw X-axis line
+    const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    xAxis.setAttribute('x1', margin);
+    xAxis.setAttribute('y1', xAxisY);
+    xAxis.setAttribute('x2', svgWidth - margin);
+    xAxis.setAttribute('y2', xAxisY);
+    svg.appendChild(xAxis);
+
+    // Draw Y-axis (XP scale)
+    const yAxisX = margin; // Position of the Y-axis
+    const yAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    yAxis.setAttribute('x1', yAxisX);
+    yAxis.setAttribute('y1', margin);
+    yAxis.setAttribute('x2', yAxisX);
+    yAxis.setAttribute('y2', svgHeight - margin);
+    yAxis.setAttribute('stroke', 'black');
+    svg.appendChild(yAxis);
+
+    // Add Y-axis labels for each value step
+    const numSteps = 5;
+    for (let i = 0; i <= numSteps; i++) {
+        const yValue = (maxAmount * (1 - i / numSteps)); // Calculate value for each step
+        const yPosition = svgHeight - margin - (yValue * yStep); // Position on the SVG
+
+        const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        label.setAttribute('x', yAxisX - 10); // Position left of the Y-axis
+        label.setAttribute('y', yPosition);
+        label.textContent = yValue.toFixed(0); // Display values as integers
+        label.setAttribute('text-anchor', 'end');
+        svg.appendChild(label);
+    }
+}
+
+drawBarChart(data)
