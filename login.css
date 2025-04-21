@@ -1,40 +1,47 @@
-
 .login-container {
-  background: rgba(0, 0, 0, 0.7);
-  padding: 40px;
-  border-radius: 10px;
+  background:#bebebe;
   width: 100%;
   max-width: 400px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   text-align: center;
+  border:
+    2px solid #eee;
 }
 
-.login-container h1 {
-  color: white;
-  font-size: 2rem;
-  margin-bottom: 30px;
+.login-container>div {
+  width: 100px;
+  margin:    20px auto;
+  background:    #fff;
+  border-radius:    50%;
+  overflow:    hidden;
+  height:100px;
+  padding:    5px;
+  border:  2px solid #555;
 }
 
-.input-field {
-  width: 100%;
+.login-container p {
+  background: linear-gradient(to right, #173574, #b8dbfe);
+  margin: 0;
+  padding: 5px;
+  text-align: left;
+  font-weight: 800;
+}
+
+.login-container img {
+  width: 80px;
+} 
+
+.input-field { 
   padding: 12px 15px;
-  margin: 10px 0;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  background: #222;
+  margin: 10px 0;   
   color: white;
-  font-size: 1rem;
-  outline: none;
+  font-size: 1rem; 
   box-sizing: border-box;
 }
+ 
 
-.input-field:focus {
-  border-color: #7f00ff;
-  background: #333;
-}
-
-.login-btn {
-  width: 100%;
+.login-btn { 
+  display: block;
   padding: 12px;
   background: linear-gradient(90deg, #7f00ff, #ff007f);
   border: none;
@@ -43,6 +50,7 @@
   font-size: 1.2rem;
   cursor: pointer;
   transition: backgroundColor 0.3s ease;
+  margin:   2rem auto;
 }
 
 .login-btn:hover {
