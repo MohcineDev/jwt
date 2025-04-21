@@ -5,9 +5,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>profile</title>
-  <link rel="stylesheet" href="main.css">
-  <link rel="stylesheet" href="profile.css">
-  <!-- <link rel="shortcut icon" href="https://jwt.io/img/favicon/apple-icon-60x60.png" type="image/x-icon"> -->
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/profile.css">
+  <link rel="shortcut icon" href="./imgs/favicon.png">
 </head>
 
 <body>
@@ -18,7 +18,15 @@
   </svg>
 
   <div id="logoutPopup" class="popup-container">
-    <div class="popup-header">Are you sure?</div>
+    <div class="popup-header">Are you sure? 
+      <span>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#000086" class="size-6">
+          <path fill-rule="evenodd" d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+        </svg>
+        
+      </span>
+      
+    </div>
     <div class="button-container">
       <button id="cancelBtn" class="btn btn-cancel">No, Keep Me Here!</button>
       <button id="confirmBtn" class="btn btn-logout">Yes, I’m Outta Here!</button>
@@ -54,10 +62,11 @@
 
 
 
-  <script src="main.js"></script>
-  <script src="profile.js"></script>
+  <script src="scripts/main.js"></script>
+  <script src="scripts/profile.js"></script>
   <!-- <script src="script.js">    </script> -->
 
+  
 </body>
 
 </html>

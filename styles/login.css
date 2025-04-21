@@ -1,22 +1,33 @@
+
 .login-container {
-  background:#bebebe;
+  background-color:var(--gray) ;
   width: 100%;
-  max-width: 400px;
+  max-width: 350px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   text-align: center;
   border:
     2px solid #eee;
 }
 
+.overlay{
+  z-index: -1;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background:#6f76a8a1;
+}
 .login-container>div {
   width: 100px;
-  margin:    20px auto;
-  background:    #fff;
-  border-radius:    50%;
-  overflow:    hidden;
-  height:100px;
-  padding:    5px;
-  border:  2px solid #555;
+  margin: 20px auto;
+  background: #fff;
+  border-radius: 50%;
+  overflow: hidden;
+  height: 100px;
+  padding: 5px;
+  border: 2px solid #555;
+  box-shadow: 2px 2px 1px 1px #888;
 }
 
 .login-container p {
@@ -29,34 +40,33 @@
 
 .login-container img {
   width: 80px;
-} 
-
-.input-field { 
-  padding: 12px 15px;
-  margin: 10px 0;   
-  color: white;
-  font-size: 1rem; 
-  box-sizing: border-box;
 }
- 
 
-.login-btn { 
+.input-field {
+  padding: 12px 15px;
+  margin: 10px 0;
+  font-size: 1rem;
+  outline: none;
+  box-sizing: border-box;
+  box-shadow: 2px 2px #333 inset, -1px -1px #fff inset, -3px -3px #999 inset;
+  border:1px;
+}
+
+.input-field::placeholder{
+  color: #959595;
+}
+
+.login-btn {
   display: block;
-  padding: 12px;
-  background: linear-gradient(90deg, #7f00ff, #ff007f);
-  border: none;
-  border-radius: 5px;
-  color: white;
+  padding: 5px 15px;
+  border: 2px solid #222;
   font-size: 1.2rem;
   cursor: pointer;
   transition: backgroundColor 0.3s ease;
-  margin:   2rem auto;
+  margin: 2rem auto;
+  background-color: #bebebe;
 }
-
-.login-btn:hover {
-  background: linear-gradient(90deg, #ff007f, #7f00ff);
-}
-
+ 
 .forgot-password {
   margin-top: 15px;
   font-size: 0.9rem;

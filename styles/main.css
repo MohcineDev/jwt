@@ -1,3 +1,6 @@
+:root{
+  --gray :#bebebe;
+}
 body {
   padding: 20px;
   margin: 0;
@@ -10,4 +13,10 @@ body {
   align-items: center;
   flex-direction: column;
   min-height: 100vh;
+}
+
+.btn{
+  border: 1px ;
+  box-shadow: 2px 2px #333 inset, -1px -1px #fff inset, -3px -3px #999 inset;
+
 }

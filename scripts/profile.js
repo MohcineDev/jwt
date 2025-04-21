@@ -50,6 +50,10 @@ const projectsXpQuery = `
 `
 
 ///TODO : use this one to omit js filter and remove piscine js
+/// ui best practice
+//test login with email / username
+//approperiate msg
+
 const onlyProject = `
   transaction(where: {eventId: {_eq: 41},
     type: {_eq: "xp"}, object: {type: {_eq: "project"}}}) {
@@ -123,7 +127,9 @@ getData()
 
 const listData = (data) => {
     let raw = data.user[0]
-    document.querySelector('.profile-name').textContent = raw.firstName + " " + raw.lastName
+    const fullName = raw.firstName + " " + raw.lastName
+    document.title = fullName
+    document.querySelector('.profile-name').textContent = fullName
     document.querySelector('.email').textContent = raw.email
     document.querySelector('.xp span').textContent = raw.xp.aggregate.sum.amount / 1000
     document.querySelector('.auditRatio  span').textContent = raw.auditRatio.toFixed(1)
@@ -160,10 +166,13 @@ function projectXPData(data) {
 const logoutPopup = document.getElementById('logoutPopup');
 const cancelBtn = document.getElementById('cancelBtn');
 const confirmBtn = document.getElementById('confirmBtn');
+const logoutSpan = document.querySelector('#logoutPopup span');
 
-logoutBtn.onclick = () => logoutPopup.style.display = 'block';
+// logoutBtn.onclick = () => logoutPopup.style.display = 'block';
+logoutBtn.onclick = () => logoutPopup.classList.add('display-logout')
 
-cancelBtn.addEventListener('click', () => logoutPopup.style.display = 'none');
+cancelBtn.onclick = () => logoutPopup.classList.remove('display-logout')
+logoutSpan.onclick = () => logoutPopup.classList.remove('display-logout')
 
 confirmBtn.addEventListener('click', () => {
     alert("Goodbye! Hope to see you soon! 👋");
@@ -380,7 +389,7 @@ function drawBarChart(data) {
     data.transaction.forEach((item, index) => {
         const x = margin + index * (barWidth + 10) + barWidth / 2; // Center the label below the bar
         const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        label.setAttribute('x', x+15);
+        label.setAttribute('x', x + 15);
         label.setAttribute('y', xAxisY + 25);  // Position below the axis
         label.textContent = item.type.substring(6);
         label.setAttribute('text-anchor', 'middle');
