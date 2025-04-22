@@ -1,4 +1,6 @@
+const spinner = document.querySelector('.spinner-container');
 const logoutBtn = document.querySelector('.logout')
+
 async function rr() {
 
     const tf = await checkJWT()
@@ -9,6 +11,7 @@ async function rr() {
 }
 
 rr()
+
 const aboutSectionQuery = `
                         user { 
                             email 
@@ -53,6 +56,7 @@ const projectsXpQuery = `
 /// ui best practice
 //test login with email / username
 //approperiate msg
+///add graphs title
 
 const onlyProject = `
   transaction(where: {eventId: {_eq: 41},
@@ -111,6 +115,7 @@ async function getData() {
         const data = await res.json()
 
         console.log(data);
+        spinner.style.display = 'none'
         listData(data.data)
 
         if (data.errors) {
@@ -122,6 +127,7 @@ async function getData() {
 
         console.log(error);
     }
+
 }
 getData()
 
