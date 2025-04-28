@@ -15,6 +15,7 @@ rr()
 const aboutSectionQuery = `
                         user { 
                             email 
+                            login
                             firstName
                             lastName
                             auditRatio
@@ -46,12 +47,24 @@ const aboutSectionQuery = `
                         }    
 `
 const projectsXpQuery = ` 
-                    transaction(where:{eventId:{_eq:41} type:{_eq:"xp"}}){   
+                    transactionXp:transaction(where:{eventId:{_eq:41} type:{_eq:"xp"}}){   
                         path
                         amount
                     } 
 `
-
+let login = null
+const auditsQuery = `{
+                        audit(where: {auditedAt: {_is_null: false}, auditorLogin: {_eq: "${login}"}}) {
+                            group {
+                            path
+                            members {
+                                userLogin
+                            }
+                            }
+                            closureType
+                        }
+                    }
+`
 ///TODO : use this one to omit js filter and remove piscine js
 /// ui best practice
 //test login with email / username
@@ -59,28 +72,27 @@ const projectsXpQuery = `
 ///add graphs title
 
 const onlyProject = `
-  transaction(where: {eventId: {_eq: 41},
-    type: {_eq: "xp"}, object: {type: {_eq: "project"}}}) {
-    path
-    type
-    amount
-    object {
-      type
-      name
-    }
-  }
+                    transaction(where: {eventId: {_eq: 41},
+                        type: {_eq: "xp"}, object: {type: {_eq: "project"}}}) {
+                        path
+                        type
+                        amount
+                        object {
+                        type
+                        name
+                        }
+                    }
     `
 const skills = `
-                {
-                    transaction(
-                    distinct_on: type 
-                    where: { type: { _like: "skill_%" } }
-                    order_by: [{ type: asc }, { amount: desc }]
-                    ) {
-                    type
-                    amount
-                    }
+                transactionSkills:transaction(
+                distinct_on: type 
+                where: { type: { _like: "skill_%" } }
+                order_by: [{ type: asc }, { amount: desc }]
+                ) {
+                type
+                amount
                 }
+                
 `
 
 async function getData() {
@@ -92,6 +104,8 @@ async function getData() {
     const query = ` {
                           ${aboutSectionQuery}
                           ${projectsXpQuery}
+                          ${skills}
+
     } `
 
     /*    
@@ -115,8 +129,11 @@ async function getData() {
         const data = await res.json()
 
         console.log(data);
+        console.log(data.data);
         spinner.style.display = 'none'
         listData(data.data)
+        console.log(data.data.user[0].login);
+        getAuditsData(data.data.user[0].login)
 
         if (data.errors) {
             return false
@@ -124,7 +141,6 @@ async function getData() {
         return true
 
     } catch (error) {
-
         console.log(error);
     }
 
@@ -133,6 +149,7 @@ getData()
 
 const listData = (data) => {
     let raw = data.user[0]
+    login = raw.login
     const fullName = raw.firstName + " " + raw.lastName
     document.title = fullName
     document.querySelector('.profile-name').textContent = fullName
@@ -142,8 +159,10 @@ const listData = (data) => {
     document.querySelector('.audits span').textContent = raw.all_audits.aggregate.count
     document.querySelector('.all_audits span:nth-of-type(1)').textContent = raw.succeded.aggregate.count
     document.querySelector('.all_audits span:nth-of-type(2)').textContent = raw.failed.aggregate.count
+    console.log(data);
 
-    projectXPData(data.transaction)
+    projectXPData(data.transactionXp)
+    drawBarChart(data.transactionSkills)
 }
 let projects = []
 
@@ -166,6 +185,7 @@ function projectXPData(data) {
     })
     console.log(projects);
     updateChart(projects)
+
 }
 
 // logout
@@ -188,6 +208,50 @@ confirmBtn.addEventListener('click', () => {
 
 });
 
+async function getAuditsData(username) {
+    login = username
+    const localJWT = localStorage.getItem('jwt')
+    if (!localJWT) {
+        return false
+    }
+    const url = 'https://learn.zone01oujda.ma/api/graphql-engine/v1/graphql'
+    const query = ` {
+        audit(where: {auditedAt: {_is_null: false}, auditorLogin: {_eq: "${login}"}}) {
+            group {
+            path
+            members {
+                userLogin
+            }
+            }
+            closureType
+        }
+    }
+   `
+    try {
+        const res = await fetch(url, {
+            method: 'post',
+            headers: {
+                Authorization: `Bearer ${localJWT}`
+            },
+            body: JSON.stringify({ query })
+        })
+
+        const data = await res.json()
+
+        console.log("audits : ", data.data);
+        spinner.style.display = 'none'
+        listAudits(data.data)
+
+        if (data.errors) {
+            return false
+        }
+        return true
+
+    } catch (error) {
+        console.log(error);
+    }
+
+}
 
 // Function to update the chart
 function updateChart(data) {
@@ -264,12 +328,6 @@ function updateChart(data) {
         label.setAttribute('transform', `rotate(45, ${x}, ${xAxisY + xTickHeight})`); // Rotate for readability
         svg.appendChild(label);
     });
-    // Add the word "Project" at the end of the X-axis
-    // const projectLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    // projectLabel.setAttribute('x', svgWidth - margin + 20); // Position at the end of X-axis
-    // projectLabel.setAttribute('y', xAxisY + xTickHeight);  // Position just below the axis
-    // projectLabel.textContent = 'Project';
-    // svg.appendChild(projectLabel);
 
     // Draw Y-axis (Value scale)
     const yAxisX = margin; // Position of the Y-axis on the left of the SVG
@@ -300,28 +358,7 @@ function updateChart(data) {
 
 /////bar-chart
 
-///// Data for the bar chart
-// Data for the bar chart
-const data = {
-    "transaction": [
-        { "type": "skill_ai", "amount": 5 },
-        { "type": "skill_algo", "amount": 38 },
-        { "type": "skill_back-end", "amount": 35 },
-        { "type": "skill_css", "amount": 15 },
-        { "type": "skill_docker", "amount": 15 },
-        { "type": "skill_front-end", "amount": 40 },
-        { "type": "skill_game", "amount": 15 },
-        { "type": "skill_go", "amount": 45 },
-        { "type": "skill_html", "amount": 35 },
-        { "type": "skill_js", "amount": 35 },
-        { "type": "skill_prog", "amount": 95 },
-        { "type": "skill_sql", "amount": 25 },
-        { "type": "skill_stats", "amount": 10 },
-        { "type": "skill_sys-admin", "amount": 5 },
-        { "type": "skill_tcp", "amount": 30 },
-        { "type": "skill_unix", "amount": 15 }
-    ]
-};
+
 function drawBarChart(data) {
 
     // Set up SVG container
@@ -329,10 +366,10 @@ function drawBarChart(data) {
     const svgWidth = svg.clientWidth;  // Get the current width of the SVG
     const svgHeight = svg.clientHeight; // Get the current height of the SVG
     const margin = 50;
-    const barWidth = svgWidth / data.transaction.length - 10;  // Width of each bar (with some padding)
+    const barWidth = svgWidth / data.length - 10;  // Width of each bar (with some padding)
 
     // Find the max value to scale the bars
-    const maxAmount = Math.max(...data.transaction.map(item => item.amount));
+    const maxAmount = Math.max(...data.map(item => item.amount));
 
     // Scaling factors
     const yStep = (svgHeight - margin * 2) / maxAmount; // Scale factor for the height of the bars
@@ -341,7 +378,7 @@ function drawBarChart(data) {
     svg.innerHTML = '';
 
     // Group elements and draw bars
-    data.transaction.forEach((item, index) => {
+    data.forEach((item, index) => {
         const x = margin + index * (barWidth + 10); // Position each bar with some spacing between them
         const y = svgHeight - margin - (item.amount * yStep); // Y position based on the amount
         const height = item.amount * yStep; // Height of the bar
@@ -392,7 +429,7 @@ function drawBarChart(data) {
 
     // Draw X-axis (labels for skills)
     const xAxisY = svgHeight - margin;
-    data.transaction.forEach((item, index) => {
+    data.forEach((item, index) => {
         const x = margin + index * (barWidth + 10) + barWidth / 2; // Center the label below the bar
         const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         label.setAttribute('x', x + 15);
@@ -436,4 +473,46 @@ function drawBarChart(data) {
     }
 }
 
-drawBarChart(data)
+
+function listAudits(data) {
+    data.audit.forEach(elem => {
+        let card = document.createElement('div')
+        card.classList.add(elem.closureType)
+
+        const projectName = document.createElement('span')
+        projectName.textContent = elem.group.path.substring(elem.group.path.lastIndexOf('/') + 1)
+        projectName.classList.add('projectName')
+        card.appendChild(projectName)
+
+        const members = document.createElement('div')
+        members.classList.add('members')
+
+        elem.group.members.forEach(mem => {
+            let span = document.createElement('span')
+            span.textContent = mem.userLogin
+            members.appendChild(span)
+        })
+        card.appendChild(members)
+        document.querySelector('#audits').appendChild(card)
+        /*
+       {
+  "group": {
+    "path": "/oujda/module/stylize",
+    "members": [
+      {
+        "userLogin": "cbenlafk"
+      },
+      {
+        "userLogin": "yelasri"
+      },
+      {
+        "userLogin": "isayen"
+      }
+    ]
+  },
+  "closureType": "succeeded"
+}
+        */
+        console.log(elem)
+    })
+}
