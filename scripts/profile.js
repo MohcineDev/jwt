@@ -217,13 +217,14 @@ async function getAuditsData(username) {
     const url = 'https://learn.zone01oujda.ma/api/graphql-engine/v1/graphql'
     const query = ` {
         audit(where: {auditedAt: {_is_null: false}, auditorLogin: {_eq: "${login}"}}) {
-            group {
-            path
-            members {
-                userLogin
-            }
-            }
+            auditedAt
             closureType
+            group {
+                path
+                members {
+                    userLogin
+                }
+            }
         }
     }
    `
@@ -478,6 +479,11 @@ function listAudits(data) {
     data.audit.forEach(elem => {
         let card = document.createElement('div')
         card.classList.add(elem.closureType)
+        
+        const auditedAt = document.createElement('span')
+        auditedAt.textContent = new Date(elem.auditedAt).toLocaleDateString()
+        auditedAt.classList.add('auditedAt')
+        card.appendChild(auditedAt)
 
         const projectName = document.createElement('span')
         projectName.textContent = elem.group.path.substring(elem.group.path.lastIndexOf('/') + 1)
