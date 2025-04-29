@@ -152,6 +152,7 @@ text {
   transition: top 5s ease;
   opacity: 0;
   visibility: hidden;
+  user-select: none;
   transition: opacity 0.3s ease, top 0.5s ease;
 }
 
@@ -236,7 +237,7 @@ section#chart-container span {
 section#chart-container svg {
   max-width: 800px;
   height: auto;
-  background-color: rgba(47, 39, 39, 0.524);
+  background-color:rgba(39, 41, 47, 0.52);
   border-radius: 10px;
   box-shadow: 0 0 10px 2px #0084c2;
 }
@@ -276,11 +277,46 @@ text {
 }
 
 #audits {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  margin-bottom: 6rem;
 }
 
-#audits>div {
+.audits-container {
+  padding: 10px 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  height: 250px;
+  overflow: hidden;
+  position: relative;
+}
+
+#audits .show {
+  height: auto;
+}
+
+/* #audits .show ~ button {
+  display: none;
+} */
+
+/* .audits-container::after, .audits-container::before {
+  content: "";
+  width: 100%;
+  height: 20px;
+  position: absolute;
+  left: 0;
+}
+
+.audits-container::before {
+  background: linear-gradient(to right, #173574, #b8dbfe);
+  top: 0;
+}
+
+.audits-container::after {
+  background-color: #2a16237d;
+  bottom: 0;
+  background: linear-gradient(to top, #2a1623d3, transparent);
+} */
+
+.audits-container>div {
   background-color: #222024;
   margin: 15px;
   padding: 20px;
@@ -288,21 +324,21 @@ text {
   transition: all 0.3s;
 }
 
-#audits>div:hover {
+.audits-container>div:hover {
   transform: translate(5px, 5px);
 }
 
-#audits>div.succeeded {
+.audits-container>div.succeeded {
   border: 2px solid #101020;
   box-shadow: 0 0 5px 1px rgb(20, 220, 120);
 }
 
-#audits>div.failed {
+.audits-container>div.failed {
   border: 2px solid #101020;
   box-shadow: 0 0 5px 1px crimson;
 }
 
-#audits>div span {
+.audits-container>div span {
   margin: 5px;
   color: #bbb;
 }
@@ -312,10 +348,23 @@ text {
   font-weight: 600;
 }
 
+#audits button {
+  display: block;
+  padding: 10px 2rem;
+  margin: 10px auto;
+  font-size: 1rem;
+  border: 2px solid #222;
+  cursor: pointer;
+  background-color: #bebebe;
+  text-transform: capitalize;
+  background-color: rgba(47, 39, 39, 0.524);
+  font-weight: 600;
+  color: #fff;
+}
 
 @media screen and (max-width: 1000px) {
 
-  #audits {
+  .audits-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
   }
@@ -323,8 +372,16 @@ text {
 
 @media screen and (max-width: 768px) {
 
-  #audits {
+  .audits-container {
     display: grid;
     grid-template-columns: 1fr;
+  }
+}
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+
+  .audits-container>div {
+    max-width: 250px;
   }
 }

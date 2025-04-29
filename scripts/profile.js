@@ -473,7 +473,7 @@ function drawBarChart(data) {
     }
 }
 
-
+const auditsContainer = document.querySelector('#audits .audits-container')
 function listAudits(data) {
     data.audit.forEach(elem => {
         let card = document.createElement('div')
@@ -493,26 +493,12 @@ function listAudits(data) {
             members.appendChild(span)
         })
         card.appendChild(members)
-        document.querySelector('#audits').appendChild(card)
-        /*
-       {
-  "group": {
-    "path": "/oujda/module/stylize",
-    "members": [
-      {
-        "userLogin": "cbenlafk"
-      },
-      {
-        "userLogin": "yelasri"
-      },
-      {
-        "userLogin": "isayen"
-      }
-    ]
-  },
-  "closureType": "succeeded"
-}
-        */
-        console.log(elem)
+        auditsContainer.appendChild(card)
+
     })
+}
+
+document.querySelector('#audits>button').onclick = (a) => {
+    let show = auditsContainer.classList.toggle('show')
+    a.target.textContent = show ? 'show less' : 'show more'
 }
