@@ -150,15 +150,22 @@ getData()
 const listData = (data) => {
     let raw = data.user[0]
     login = raw.login
-    const fullName = raw.firstName + " " + raw.lastName
+    const fullName = raw.firstName   + " " + raw.lastName  
     document.title = fullName
     document.querySelector('.profile-name').textContent = fullName
-    document.querySelector('.email').textContent = raw.email
-    document.querySelector('.xp span').textContent = raw.xp.aggregate.sum.amount / 1000
+    document.querySelector('.infos div p:nth-of-type(1) span').textContent = fullName 
+    document.querySelector('.infos div p:nth-of-type(2) span').textContent = raw.email || '-'
+    document.querySelector('.infos div p:nth-of-type(3) span').textContent = login || '-'
+    document.querySelector('.email').textContent = raw.email || '-'
+    document.querySelector('.xp span').textContent = raw.xp.aggregate.sum.amount / 1000 || '-'
     document.querySelector('.auditRatio  span').textContent = raw.auditRatio.toFixed(1)
-    document.querySelector('.audits span').textContent = raw.all_audits.aggregate.count
-    document.querySelector('.all_audits span:nth-of-type(1)').textContent = raw.succeded.aggregate.count
-    document.querySelector('.all_audits span:nth-of-type(2)').textContent = raw.failed.aggregate.count
+    document.querySelector('.audits span').textContent = raw.all_audits.aggregate.count || '-'
+    document.querySelector('.infos div:nth-of-type(2) p:nth-of-type(1) span').textContent = raw.all_audits.aggregate.count || '-' 
+    document.querySelector('.infos div:nth-of-type(2) p:nth-of-type(2) span').textContent = raw.succeded.aggregate.count || '-'
+    document.querySelector('.infos div:nth-of-type(2) p:nth-of-type(3) span').textContent = raw.failed.aggregate.count || '-'
+
+    document.querySelector('.all_audits span:nth-of-type(1)').textContent = raw.succeded.aggregate.count || '-'
+    document.querySelector('.all_audits span:nth-of-type(2)').textContent = raw.failed.aggregate.count || '-'
     console.log(data);
 
     projectXPData(data.transactionXp)
