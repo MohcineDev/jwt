@@ -61,6 +61,13 @@ h1 {
   max-height: 250px;
 }
 
+.nodata{
+  
+}
+.nodata p{
+  
+}
+
 .profile-card button {
   padding: 10px;
   margin: 10px 0;
@@ -403,6 +410,11 @@ text {
   .audits-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media screen and (max-width: 925px) {
+  .infos {
+    grid-template-columns:  1fr;
   }
 }
 

@@ -1,17 +1,19 @@
 const user_email = document.querySelector('input[type="text"]')
 const pass = window.document.querySelector('input[type="password"]')
 const form = document.querySelector('form')
+const errElm = document.querySelector('.err')
+const url = 'https://learn.zone01oujda.ma/api/auth/signin'
 
-async function rr() {
+async function JWTHandler() {
 
-    const tf = await checkJWT()
+    const res = await checkJWT()
 
-    if (tf) {
+    if (res) {
         location.pathname = `${root}/profile.html`
     }
 }
 
-rr()
+JWTHandler()
 
 form.onsubmit = async (e) => {
     //prevent page reload ==+> access profile page
@@ -19,7 +21,7 @@ form.onsubmit = async (e) => {
 
     const data = user_email.value + ':' + pass.value
 
-    const url = 'https://learn.zone01oujda.ma/api/auth/signin'
+
     try {
         const res = await fetch(url, {
 
@@ -41,9 +43,15 @@ form.onsubmit = async (e) => {
         setTimeout(() => {
             location.pathname = `${root}/profile.html`
         }, 200);
+
     } catch (error) {
-        alert(error.error)
-        console.log(error.error);
+        errElm.textContent = error.error
+        errElm.style.display = 'block'
+
+        setTimeout(() => {
+            errElm.style.display = 'none'
+        }, 1500);
+        // alert(error.error)
     }
 
 }
