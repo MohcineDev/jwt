@@ -159,6 +159,9 @@ const listData = (data) => {
     document.querySelector('.email').textContent = raw.email || '-'
     document.querySelector('.xp span').textContent = raw.xp.aggregate.sum.amount / 1000 || '-'
     document.querySelector('.auditRatio  span').textContent = raw.auditRatio.toFixed(1)
+    document.querySelector('.infos div:nth-of-type(3) p:nth-of-type(1) span').textContent =raw.xp.aggregate.sum.amount / 1000  || '-' 
+    document.querySelector('.infos div:nth-of-type(3) p:nth-of-type(2) span').textContent = raw.auditRatio.toFixed(1) || '-' 
+
     document.querySelector('.audits span').textContent = raw.all_audits.aggregate.count || '-'
     document.querySelector('.infos div:nth-of-type(2) p:nth-of-type(1) span').textContent = raw.all_audits.aggregate.count || '-' 
     document.querySelector('.infos div:nth-of-type(2) p:nth-of-type(2) span').textContent = raw.succeded.aggregate.count || '-'

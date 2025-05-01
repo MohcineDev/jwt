@@ -117,7 +117,7 @@ h1 {
 .infos>div {   
   border-radius: 10px;
   padding: 10px;
-  min-width: 150px;
+  min-width: 250px;
   background-color:rgba(39, 41, 47, 0.52);
   border-radius:10px;
   box-shadow: 0 0 10px 2px #0084c2;
@@ -130,6 +130,7 @@ h1 {
 }
 .infos>div p span{
   font-weight: 500;
+  text-transform: none;
 }
 
 /* //------- */
