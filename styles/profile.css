@@ -61,6 +61,13 @@ h1 {
   max-height: 250px;
 }
 
+.nodata{
+  
+}
+.nodata p{
+  
+}
+
 .profile-card button {
   padding: 10px;
   margin: 10px 0;
@@ -104,6 +111,33 @@ h1 {
 
 .all_audits span:nth-of-type(2) {
   background-color: crimson;
+}
+
+.infos {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  justify-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.infos>div {   
+  border-radius: 10px;
+  padding: 10px;
+  min-width: 250px;
+  background-color:rgba(39, 41, 47, 0.52);
+  border-radius:10px;
+  box-shadow: 0 0 10px 2px #0084c2;
+      
+}
+   
+.infos>div p{
+  font-weight: 600;   
+  text-transform: capitalize;
+}
+.infos>div p span{
+  font-weight: 500;
+  text-transform: none;
 }
 
 /* //------- */
@@ -376,6 +410,11 @@ text {
   .audits-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media screen and (max-width: 925px) {
+  .infos {
+    grid-template-columns:  1fr;
   }
 }
 

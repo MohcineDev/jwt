@@ -1,16 +1,33 @@
 const spinner = document.querySelector('.spinner-container');
 const logoutBtn = document.querySelector('.logout')
+const profileName = document.querySelectorAll('.profile-name, .infos div:nth-of-type(1) p:nth-of-type(1) span')
+const profileEmail = document.querySelectorAll('.email,  .infos div p:nth-of-type(2) span')
+const auditRatio = document.querySelectorAll('.auditRatio  span,  .infos div:nth-of-type(3) p:nth-of-type(2) span')
+const all_audits = document.querySelectorAll('.audits span, .infos div:nth-of-type(2) p:nth-of-type(1) span')
+const xp = document.querySelectorAll('.xp span, .infos div:nth-of-type(3) p:nth-of-type(1) span')
+const succeded = document.querySelectorAll(' .all_audits span:nth-of-type(1), .infos div:nth-of-type(2) p:nth-of-type(2) span')
+const failed = document.querySelectorAll('.all_audits span:nth-of-type(2), .infos div:nth-of-type(2) p:nth-of-type(3) span')
+const auditsContainer = document.querySelector('#audits .audits-container')
+const svg = document.getElementById('graph');
+const chartContainer = document.querySelectorAll('#chart-container');
 
-async function rr() {
+// logout
+const logoutPopup = document.getElementById('logoutPopup');
+const cancelBtn = document.getElementById('cancelBtn');
+const confirmBtn = document.getElementById('confirmBtn');
+const logoutSpan = document.querySelector('#logoutPopup span');
 
-    const tf = await checkJWT()
 
-    if (!tf) {
+async function JWTHandler() {
+
+    const res = await checkJWT()
+
+    if (!res) {
         location.pathname = `${root}/index.html`
     }
 }
 
-rr()
+JWTHandler()
 
 const aboutSectionQuery = `
                         user { 
@@ -65,24 +82,7 @@ const auditsQuery = `{
                         }
                     }
 `
-///TODO : use this one to omit js filter and remove piscine js
-/// ui best practice
-//test login with email / username
-//approperiate msg
-///add graphs title
 
-const onlyProject = `
-                    transaction(where: {eventId: {_eq: 41},
-                        type: {_eq: "xp"}, object: {type: {_eq: "project"}}}) {
-                        path
-                        type
-                        amount
-                        object {
-                        type
-                        name
-                        }
-                    }
-    `
 const skills = `
                 transactionSkills:transaction(
                 distinct_on: type 
@@ -128,11 +128,10 @@ async function getData() {
 
         const data = await res.json()
 
-        console.log(data);
-        console.log(data.data);
         spinner.style.display = 'none'
+        console.log(data.data.transactionXp);
+
         listData(data.data)
-        console.log(data.data.user[0].login);
         getAuditsData(data.data.user[0].login)
 
         if (data.errors) {
@@ -145,6 +144,7 @@ async function getData() {
     }
 
 }
+
 getData()
 
 const listData = (data) => {
@@ -152,26 +152,42 @@ const listData = (data) => {
     login = raw.login
     const fullName = raw.firstName + " " + raw.lastName
     document.title = fullName
-    document.querySelector('.profile-name').textContent = fullName
-    document.querySelector('.email').textContent = raw.email
-    document.querySelector('.xp span').textContent = raw.xp.aggregate.sum.amount / 1000
-    document.querySelector('.auditRatio  span').textContent = raw.auditRatio.toFixed(1)
-    document.querySelector('.audits span').textContent = raw.all_audits.aggregate.count
-    document.querySelector('.all_audits span:nth-of-type(1)').textContent = raw.succeded.aggregate.count
-    document.querySelector('.all_audits span:nth-of-type(2)').textContent = raw.failed.aggregate.count
-    console.log(data);
 
-    projectXPData(data.transactionXp)
+    fillData(profileName, fullName || '-')
+    fillData(profileEmail, raw.email || '-')
+    fillData(auditRatio, raw.auditRatio ? raw.auditRatio.toFixed(1) : '-')
+    fillData(all_audits, raw.all_audits.aggregate.count || '-')
+    fillData(xp, (raw.xp.aggregate.sum.amount / 1000).toFixed(0) || '-')
+    fillData(succeded, raw.succeded.aggregate.count || '-')
+    fillData(failed, raw.failed.aggregate.count || '-')
+    document.querySelector('.infos div p:nth-of-type(3) span').textContent = login || '-'
+    if (data.transactionXp && data.transactionXp.length >= 1) {
+
+        projectXPData(data.transactionXp)
+    } else {
+        chartContainer.forEach(elem => {
+
+            elem.querySelector('svg').style.display = 'none'
+            elem.appendChild(nodataELem());
+        });
+    }
     drawBarChart(data.transactionSkills)
 }
+
+function fillData(htmlElem, value) {
+    htmlElem.forEach(elem => elem.textContent = value)
+}
+
 let projects = []
 
+
+///only the projects /// remove checkpoint modules
 function projectXPData(data) {
-    console.log(data);
     projects = []
     let projectName
 
     data.forEach(elem => {
+        ///check for checkpoint
         if (elem.path.search("checkpoint") == -1) {
             projectName = elem.path.split('/')[3]
 
@@ -183,20 +199,11 @@ function projectXPData(data) {
 
         }
     })
-    console.log(projects);
     updateChart(projects)
-
 }
 
-// logout
-const logoutPopup = document.getElementById('logoutPopup');
-const cancelBtn = document.getElementById('cancelBtn');
-const confirmBtn = document.getElementById('confirmBtn');
-const logoutSpan = document.querySelector('#logoutPopup span');
-
-// logoutBtn.onclick = () => logoutPopup.style.display = 'block';
+///LOGOUT LOGIC
 logoutBtn.onclick = () => logoutPopup.classList.add('display-logout')
-
 cancelBtn.onclick = () => logoutPopup.classList.remove('display-logout')
 logoutSpan.onclick = () => logoutPopup.classList.remove('display-logout')
 
@@ -205,7 +212,6 @@ confirmBtn.addEventListener('click', () => {
     logoutPopup.style.display = 'none';
     localStorage.removeItem('jwt')
     location.pathname = `${root}/index.html`
-
 });
 
 async function getAuditsData(username) {
@@ -215,6 +221,7 @@ async function getAuditsData(username) {
         return false
     }
     const url = 'https://learn.zone01oujda.ma/api/graphql-engine/v1/graphql'
+    ////get audits based on user username
     const query = ` {
         audit(where: {auditedAt: {_is_null: false}, auditorLogin: {_eq: "${login}"}}) {
             auditedAt
@@ -239,7 +246,6 @@ async function getAuditsData(username) {
 
         const data = await res.json()
 
-        console.log("audits : ", data.data);
         spinner.style.display = 'none'
         listAudits(data.data)
 
@@ -254,9 +260,8 @@ async function getAuditsData(username) {
 
 }
 
-// Function to update the chart
+// Function to update the chart - XP / Projects progression
 function updateChart(data) {
-    const svg = document.getElementById('graph');
     const svgWidth = svg.clientWidth;  // Get the current width of the SVG
     const svgHeight = svg.clientHeight; // Get the current height of the SVG
     const margin = 50;
@@ -357,9 +362,7 @@ function updateChart(data) {
 }
 
 
-/////bar-chart
-
-
+/////bar-chart  - Highest skills
 function drawBarChart(data) {
 
     // Set up SVG container
@@ -474,37 +477,56 @@ function drawBarChart(data) {
     }
 }
 
-const auditsContainer = document.querySelector('#audits .audits-container')
 function listAudits(data) {
-    data.audit.forEach(elem => {
-        let card = document.createElement('div')
-        card.classList.add(elem.closureType)
-        
-        const auditedAt = document.createElement('span')
-        auditedAt.textContent = new Date(elem.auditedAt).toLocaleDateString()
-        auditedAt.classList.add('auditedAt')
-        card.appendChild(auditedAt)
+    console.log(data);
+    if (!data.audit || data.audit.length < 1) {
+        auditsContainer.appendChild(nodataELem())
+    } else {
 
-        const projectName = document.createElement('span')
-        projectName.textContent = elem.group.path.substring(elem.group.path.lastIndexOf('/') + 1)
-        projectName.classList.add('projectName')
-        card.appendChild(projectName)
+        data.audit.forEach(elem => {
+            ///audit container
+            let card = document.createElement('div')
+            /// succeeded / failed
+            card.classList.add(elem.closureType)
 
-        const members = document.createElement('div')
-        members.classList.add('members')
+            const auditedAt = document.createElement('span')
+            auditedAt.textContent = new Date(elem.auditedAt).toLocaleDateString()
+            auditedAt.classList.add('auditedAt')
+            card.appendChild(auditedAt)
 
-        elem.group.members.forEach(mem => {
-            let span = document.createElement('span')
-            span.textContent = mem.userLogin
-            members.appendChild(span)
+            const projectName = document.createElement('span')
+            ///get only the project name
+            projectName.textContent = elem.group.path.substring(elem.group.path.lastIndexOf('/') + 1)
+            projectName.classList.add('projectName')
+            card.appendChild(projectName)
+
+            const members = document.createElement('div')
+            members.classList.add('members')
+
+            elem.group.members.forEach(mem => {
+                let span = document.createElement('span')
+                span.textContent = mem.userLogin
+                members.appendChild(span)
+            })
+            card.appendChild(members)
+            auditsContainer.appendChild(card)
+
         })
-        card.appendChild(members)
-        auditsContainer.appendChild(card)
-
-    })
+    }
 }
 
 document.querySelector('#audits>button').onclick = (a) => {
     let show = auditsContainer.classList.toggle('show')
     a.target.textContent = show ? 'show less' : 'show more'
+}
+
+function nodataELem() {
+
+    const nodata = document.createElement('div')
+    nodata.classList.add('nodata')
+    const span = document.createElement('span')
+    span.textContent = "NO DATA"
+
+    nodata.appendChild(span)
+    return nodata
 }
