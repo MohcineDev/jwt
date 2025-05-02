@@ -1,6 +1,14 @@
 const user_email = document.querySelector('input[type="text"]')
 const pass = window.document.querySelector('input[type="password"]')
 const form = document.querySelector('form')
+const login = document.querySelector('.login-container')
+
+
+console.log(login);
+setTimeout(() => {
+    
+    login.classList.add('loaded')
+}, 200);
 
 async function rr() {
 
